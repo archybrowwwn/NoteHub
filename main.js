@@ -3,9 +3,13 @@ const path = require ('path');
 
 app.on('ready', () => {
     let win = new BrowserWindow({
-        wight: 1000,
+        width: 1000,
         height: 600,
         icon: path.join(__dirname, 'limpopo.png'),
+        webPreferences: {
+            preload: path.join(__dirname, 'load.js'),
+            nodeIntegration: true
+        }
     })
     win.setMenuBarVisibility(false);
     win.setTitle('Текстовый редактор');
