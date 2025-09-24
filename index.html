@@ -4,12 +4,96 @@
 <body>
     <div id="left-side">
         <input id="create-input" type="text" />
-        <i id="add-icon"  class="material-icons">add</i>
+        <i id="add-icon" onclick="addIconClick()" class="material-icons">add</i>
     </div>
     <div id="right-side">
         <h1 id="title"></h1>
-        <i id="save-icon" class="material-icons">save</i>
-        <i id="del-icon"  class="material-icons">delete</i>
+        <i id="save-icon" onclick="saveIconClick()" class="material-icons">save</i>
+        <i id="del-icon"  onclick="delIconClick()" class="material-icons">delete</i>
         <textarea autofocus oninput="textareaInput()"></textarea>
     </div>
+    <script>
+  // 1) Берём нужные элементы
+  const leftSide  = document.getElementById('left-side');
+  const rightSide = document.getElementById('right-side');
+  const titleEl   = document.getElementById('title');
+  const textarea  = document.querySelector('textarea');
+
+  const addIcon  = document.getElementById('add-icon');
+  const saveIcon = document.getElementById('save-icon');
+  const delIcon  = document.getElementById('del-icon');
+
+  // 2) Функции-обработчики
+  function addIconClick() {
+    // пример: создаём пустую заметку с уникальным именем
+    const base = 'Новая заметка';
+    const ext  = '.txt';
+    const existing = (window.electron.getFileNames() || '').split('\n').filter(Boolean);
+    let n = 1, name = `${base}${ext}`;
+    while (existing.includes(name)) { n++; name = `${base} ${n}${ext}`; }
+
+    // если есть createNote/saveFile — можно сразу создать файл
+    // window.electron.saveFile?.(name, '');
+    addFileListItem(name);
+    rightSide.style.display = 'block';
+    titleEl.innerText = name;
+    textarea.value = '';
+  }
+
+  function saveIconClick() {
+    const name = titleEl.innerText.trim();
+    if (!name) return;
+    // предположим, что есть electron.saveFile(name, content)
+    if (window.electron.saveFile) window.electron.saveFile(name, textarea.value);
+    console.log('saved:', name);
+  }
+
+  function delIconClick() {
+    const name = titleEl.innerText.trim();
+    if (!name) return;
+    // если будет electron.deleteFile — удалим и из DOM; пока просто очищаем правую часть
+    textarea.value = '';
+    rightSide.style.display = 'none';
+    console.log('delete clicked for:', name);
+  }
+
+  function textareaInput() {
+    // сюда можно повесить авто-сейв/индикатор и т.п.
+  }
+
+  // 3) Навешиваем обработчики
+  addIcon.addEventListener('click', addIconClick);
+  saveIcon.addEventListener('click', saveIconClick);
+  delIcon.addEventListener('click', delIconClick);
+  textarea.addEventListener('input', textareaInput);
+
+  // 4) Остальной код как был, но с исправленными переменными
+  const addFileListItem = (fileName) => {
+    const div = document.createElement('div');
+    const p = document.createElement('p');
+    const i = document.createElement('i');
+    p.innerText = fileName;
+    p.className = 'file-name';
+    i.className = 'material-icons file-icon';
+    i.innerText = 'description';
+    div.className = 'file-block';
+    div.appendChild(i);
+    div.appendChild(p);
+    div.addEventListener('click', () => {
+      rightSide.style.display = 'block';
+      titleEl.innerText = fileName;
+      textarea.value = window.electron.readFile(fileName);
+    });
+    leftSide.appendChild(div);
+  };
+
+  const getFileList = () => {
+    const files = window.electron.getFileNames();
+    if (files) files.split('\n').filter(Boolean).forEach(addFileListItem);
+  };
+
+  getFileList();
+</script>
+
 </body>
+
