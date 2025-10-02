@@ -1,11 +1,22 @@
 package app.history_saver;
 
 
-private class Node<T> {
-    protected T data;
-    protected Node next;
+public class Node<T> {
+    public T data;
+    public Node<T> next;
 
-    Node(T data){
+    public Node(T data){
         this.data = data;
+        this.next = null;
+    }
+
+    public Node(T data, Node<T> next){
+        this.data = data;
+        this.next = next;
+    }
+
+    public Node(){
+        this.data = null;
+        this.next = null;
     }
 }
