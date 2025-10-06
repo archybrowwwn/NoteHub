@@ -1,48 +1,56 @@
 package app.main;
 
-import app.ui.EditorPanel;
-import app.ui.MenuPanel;
-import app.ui.SideBarPanel;
+import app.ui.AppStyle;
+import app.ui.Editor;
+import app.ui.Menu;
+import app.ui.SideBar;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainWindow extends JFrame {
-    private SideBarPanel sideBar;
-    private EditorPanel editor;
-    private MenuPanel menu;
+    private final SideBar sideBar;
+    private final Editor editor;
+    private final Menu menu;
 
     public MainWindow() {
         setTitle("NoteHub");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        editor = new EditorPanel();
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        sideBar = new SideBarPanel(this);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-        menu = new MenuPanel(this);
+            UIManager.put("Menu.font", AppStyle.FONT);
+            UIManager.put("MenuItem.font", AppStyle.FONT);
+            UIManager.put("TextArea.font", AppStyle.FONT);
+            UIManager.put("Button.font", AppStyle.FONT);
+        } catch (Exception ignored) {}
+
+        editor = new Editor();
+        sideBar = new SideBar(this);
+        menu = new Menu(this);
         setJMenuBar(menu);
 
-        JSplitPane splitPane = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT,
-                sideBar,
-                editor
-        );
-        splitPane.setDividerLocation(200);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sideBar, editor);
+        splitPane.setDividerLocation(220);
+        splitPane.setContinuousLayout(true);
+        splitPane.setBorder(null);
 
         add(splitPane, BorderLayout.CENTER);
     }
 
-    public EditorPanel getEditor() {
+    public Editor getEditor() {
         return editor;
     }
 
-    public MenuPanel getMenu() {
+    public Menu getMenu() {
         return menu;
     }
 
-    public SideBarPanel getSideBar() {
+    public SideBar getSideBar() {
         return sideBar;
     }
 }
