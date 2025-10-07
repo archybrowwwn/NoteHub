@@ -1,7 +1,7 @@
 package app.ui;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class Editor extends JPanel {
     private final JTextArea textArea;
@@ -20,5 +20,9 @@ public class Editor extends JPanel {
 
     public String getText() {
         return textArea.getText();
+    }
+
+    public JTextArea getTextArea() {
+        return textArea;
     }
 }

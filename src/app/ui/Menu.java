@@ -3,7 +3,6 @@ package app.ui;
 import app.main.MainWindow;
 import app.model.Note;
 import app.model.NoteRepository;
-
 import javax.swing.*;
 
 public class Menu extends JMenuBar {
@@ -14,6 +13,7 @@ public class Menu extends JMenuBar {
     private final JMenuItem exitItem;
     private final JMenuItem undoItem;
     private final JMenuItem redoItem;
+    private final JMenuItem searchItem;
 
     private final NoteRepository repo = new NoteRepository();
     private Note currentNote;
@@ -54,11 +54,58 @@ public class Menu extends JMenuBar {
 
         undoItem = createMenuItem("Undo", "control Z", () -> { /* действие */ });
         redoItem = createMenuItem("Redo", "control Y", () -> { /* действие */ });
+        searchItem = createMenuItem("Search", "control F", () -> {
+            performSearch(parent);
+        });
 
         editMenu.add(undoItem);
         editMenu.add(redoItem);
+        editMenu.addSeparator();
+        editMenu.add(searchItem);
+
+        
         add(editMenu);
     }
+
+    private void performSearch(MainWindow parent) {
+        String query = JOptionPane.showInputDialog(parent, "Enter text to search");
+        if (query == null || query.isBlank()) {
+            return;
+        }
+
+        JTextArea textArea = parent.getEditor().getTextArea();
+        String text = textArea.getText();
+
+        int index = findIndex(text, query.trim());
+        if (index >= 0) {
+            textArea.requestFocus();
+            textArea.select(index, index + query.length());
+        } else {
+            JOptionPane.showMessageDialog(parent, "Text not found: \"" + query + "\"");
+        }
+
+    }
+            
+
+    private int findIndex(String text, String query) {
+        int n = text.length();
+        int m = query.length();
+
+        for (int i = 0; i <= n - m; i++) {
+            int j;
+            for (j = 0; j < m; j++) {
+                if (text.charAt(i + j) != query.charAt(j)) {
+                    break;
+                }
+            }
+            if (j == m) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+                
 
     private JMenuItem createMenuItem(String text, String accelerator, Runnable action) {
         JMenuItem menuItem = new JMenuItem(text);
