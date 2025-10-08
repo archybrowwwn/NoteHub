@@ -1,9 +1,8 @@
 package app.history_saver;
 
-
-private class Node<T> {
-    protected T data;
-    protected Node next;
+class Node<T> {
+    T data;
+    Node<T> next;
 
     Node(T data){
         this.data = data;
