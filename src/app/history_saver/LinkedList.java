@@ -1,48 +1,38 @@
 package app.history_saver;
 
-import java.util.NoSuchElementException;
-
-public class LinkedList<T> {
-    Node<T> head = null;
-    Node<T> tail = null;
-    int size = 0;
+public class LinkedList<T> implements Iterable<T>{
+    private Node<T> head = null;
+    private Node<T> tail = null;
+    private int size = 0;
 
     public void addToEnd(T data){
         Node<T> newNode = new Node<>(data);
-        newNode.next = null;
         
         if (size == 0){
             head = newNode;
             tail = newNode;
         }else{
-            Node<T> cur = head;
-
-            while (cur.next != null) {
-                cur = cur.next;
-            }
-
-            cur.next = newNode;
+            tail.next = newNode;
+            tail = newNode;
         }
         size++;
     }
 
     public void addToFirst(T data){
         Node<T> newNode = new Node<>(data);
-        newNode.next = null;
+        newNode.next = head;
+        head = newNode;
         
-        if (size == 0){
-            head = newNode;
+        if (size == 0) {
             tail = newNode;
-        }else{
-            newNode.next = head;
-            head = newNode;
         }
+        
         size++;
     }
 
     public T getAt(int index){
         if (index > size || index < 0){
-            throw new NoSuchElementException();
+            throw new IndexOutOfBoundsException();
         }
 
         Node<T> cur = head;
@@ -109,6 +99,10 @@ public class LinkedList<T> {
 
     public int getSize(){
         return size;
+    }
+
+    public boolean isEmpty(){
+        return size == 0;
     }
 
     public LinkedListIterator<T> iterator(){
