@@ -3,7 +3,10 @@ package app.ui;
 import app.data.Note;
 import app.data.NoteRepository;
 import app.main.MainWindow;
+import app.undo_manager.UndoManager;
+import app.undo_manager.UndoableFilter;
 
+import javax.swing.text.AbstractDocument;
 import javax.swing.*;
 
 public class Menu extends JMenuBar {
@@ -12,6 +15,7 @@ public class Menu extends JMenuBar {
     private Note currentNote;
 
     private final MainWindow mainWindow;
+    private final UndoManager undo;
 
     // ----- Меню -----
     private final JMenu fileMenu;
@@ -32,8 +36,9 @@ public class Menu extends JMenuBar {
     private JMenuItem editorViewItem;
     private JMenuItem previewViewItem;
 
-    public Menu(MainWindow mainWindow) {
+    public Menu(MainWindow mainWindow, UndoManager undo) {
         this.mainWindow = mainWindow;
+        this.undo = undo;
 
         fileMenu = createFileMenu();
         editMenu = createEditMenu();
@@ -42,6 +47,17 @@ public class Menu extends JMenuBar {
         add(fileMenu);
         add(editMenu);
         add(viewMenu);
+
+        AbstractDocument doc = (AbstractDocument) mainWindow.getViewController()
+                .getEditor().getTextArea().getDocument();
+        doc.setDocumentFilter(new UndoableFilter(
+                mainWindow.getViewController().getEditor().getTextArea(), undo));
+
+        // Таймер для включения/отключения кнопок undo/redo
+        new Timer(200, e -> {
+            undoItem.setEnabled(undo.canUndo());
+            redoItem.setEnabled(undo.canRedo());
+        }).start();
     }
 
     // ---------- fileMenu ----------
@@ -135,11 +151,11 @@ public class Menu extends JMenuBar {
     }
 
     private void handleUndo() {
-        // TODO: Реализовать Undo
+        undo.undo(mainWindow.getViewController().getEditor().getTextArea());
     }
 
     private void handleRedo() {
-        // TODO: Реализовать Redo
+        undo.redo(mainWindow.getViewController().getEditor().getTextArea());
     }
 
     private void handleSearch() {
