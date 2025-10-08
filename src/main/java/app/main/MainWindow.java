@@ -9,6 +9,12 @@ import javax.swing.UIManager;
 import app.ui.AppStyle;
 import app.ui.SideBar;
 import app.ui.Menu;
+import app.ui.Editor;
+
+import app.undo_manager.UndoManager;
+import app.undo_manager.UndoableFilter;
+
+import javax.swing.text.AbstractDocument;
 
 public class MainWindow extends JFrame {
 
@@ -22,13 +28,19 @@ public class MainWindow extends JFrame {
         configureLookAndFeel();
 
         viewController = new ViewController(this);
-
         sideBar = new SideBar(this);
-        menu = new Menu(this);
+
+        UndoManager undo = new UndoManager();
+        menu = new Menu(this, undo);
 
         setJMenuBar(menu);
         add(sideBar, BorderLayout.WEST);
         add(viewController.getCurrentView(), BorderLayout.CENTER);
+
+        // ---------- Настройка Undo/Redo для Editor ----------
+        Editor editor = viewController.getEditor();
+        AbstractDocument doc = (AbstractDocument) editor.getTextArea().getDocument();
+        doc.setDocumentFilter(new UndoableFilter(editor.getTextArea(), undo));
     }
 
     // ---------- Configuration ----------
