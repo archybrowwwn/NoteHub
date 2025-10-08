@@ -1,4 +1,4 @@
-package app.history_saver;
+package app.linear_structures;
 
 public class LinkedList<T> implements Iterable<T>{
     private Node<T> head = null;
@@ -95,6 +95,11 @@ public class LinkedList<T> implements Iterable<T>{
             }
         }
         size--;
+    }
+
+    public void clear(){
+        head = null;
+        tail = null;
     }
 
     public int getSize(){

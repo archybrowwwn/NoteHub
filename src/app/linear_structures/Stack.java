@@ -1,4 +1,4 @@
-package app.history_saver;
+package app.linear_structures;
 
 import java.util.NoSuchElementException;
 
@@ -27,6 +27,10 @@ public class Stack<T> {
 
     public void push(T data){
         list.addToFirst(data);
+    }
+
+    public void clear(){
+        list.clear();
     }
 
 }

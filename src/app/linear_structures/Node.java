@@ -1,4 +1,4 @@
-package app.history_saver;
+package app.linear_structures;
 
 class Node<T> {
     T data;

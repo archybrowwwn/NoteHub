@@ -4,8 +4,12 @@ import app.ui.AppStyle;
 import app.ui.Editor;
 import app.ui.Menu;
 import app.ui.SideBar;
+import app.undo_manager.UndoManager;
+import app.undo_manager.UndoableFilter;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+
 import java.awt.*;
 
 public class MainWindow extends JFrame {
@@ -30,8 +34,14 @@ public class MainWindow extends JFrame {
         } catch (Exception ignored) {}
 
         editor = new Editor();
+
+        UndoManager undo = new UndoManager();
+        AbstractDocument doc = (AbstractDocument) editor.getTextArea().getDocument();
+        doc.setDocumentFilter(new UndoableFilter(editor.getTextArea(), undo));
+
+
         sideBar = new SideBar(this);
-        menu = new Menu(this);
+        menu = new Menu(this, undo);
         setJMenuBar(menu);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sideBar, editor);

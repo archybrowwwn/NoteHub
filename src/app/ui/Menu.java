@@ -3,6 +3,8 @@ package app.ui;
 import app.main.MainWindow;
 import app.model.Note;
 import app.model.NoteRepository;
+import app.undo_manager.UndoManager;
+
 import javax.swing.*;
 
 public class Menu extends JMenuBar {
@@ -18,7 +20,7 @@ public class Menu extends JMenuBar {
     private final NoteRepository repo = new NoteRepository();
     private Note currentNote;
 
-    public Menu(MainWindow parent) {
+    public Menu(MainWindow parent, UndoManager undo) {
         fileMenu = new JMenu("File");
 
         newNoteItem = createMenuItem("New note", "control N", () -> {
@@ -52,8 +54,8 @@ public class Menu extends JMenuBar {
 
         editMenu = new JMenu("Edit");
 
-        undoItem = createMenuItem("Undo", "control Z", () -> { /* действие */ });
-        redoItem = createMenuItem("Redo", "control Y", () -> { /* действие */ });
+        undoItem = createMenuItem("Undo", "control Z", () -> { undo.undo(parent.getEditor().getTextArea()); });
+        redoItem = createMenuItem("Redo", "control Y", () -> { undo.redo(parent.getEditor().getTextArea()); });
         searchItem = createMenuItem("Search", "control F", () -> {
             performSearch(parent);
         });
@@ -65,6 +67,11 @@ public class Menu extends JMenuBar {
 
         
         add(editMenu);
+
+        new Timer(200, e -> {
+        undoItem.setEnabled(undo.canUndo());
+        redoItem.setEnabled(undo.canRedo());
+        }).start();
     }
 
     private void performSearch(MainWindow parent) {

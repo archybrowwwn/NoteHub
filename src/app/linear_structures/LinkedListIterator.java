@@ -1,4 +1,4 @@
-package app.history_saver;
+package app.linear_structures;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
