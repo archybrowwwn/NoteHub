@@ -1,12 +1,12 @@
 package app.ui;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
-public class EditorPanel extends JPanel {
-    private JTextArea textArea;
+public class Editor extends JPanel {
+    private final JTextArea textArea;
 
-    public EditorPanel() {
+    public Editor() {
         setLayout(new BorderLayout());
         textArea = new JTextArea();
         textArea.setLineWrap(true);
@@ -20,5 +20,9 @@ public class EditorPanel extends JPanel {
 
     public String getText() {
         return textArea.getText();
+    }
+
+    public JTextArea getTextArea() {
+        return textArea;
     }
 }

@@ -5,6 +5,7 @@
 
 /.idea/
 /.vscode/
+/files/
 *.iml
 
 .DS_Store

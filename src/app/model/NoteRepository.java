@@ -10,12 +10,12 @@ public class NoteRepository {
         new java.io.File(saveDir).mkdirs();
     }
 
-    public void saveNote(NoteFile note) throws Exception {
-        Files.write(Paths.get(saveDir, note.getTitle() + ".txt"), note.getContent().getBytes());
+    public void saveNote(Note note) throws Exception {
+        Files.write(Paths.get(saveDir, note.getTitle() + ".txt"), note.getText().getBytes());
     }
 
-    public NoteFile loadNote(String title) throws Exception {
-        return new NoteFile(title, Files.readString(Paths.get(saveDir, title + ".txt")));
+    public Note loadNote(String title) throws Exception {
+        return new Note(title, Files.readString(Paths.get(saveDir, title + ".txt")));
     }
 
     public List<String> listNoteTitles() {
